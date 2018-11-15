@@ -7,9 +7,9 @@ import javax.persistence.*;
 
 @Entity
 @Table
-@ToString(of = {"id","name","cost","owner"})
-@EqualsAndHashCode(of = {"id","name"})
-public class Bike {
+@ToString(of = {"id","name","cost"})
+@EqualsAndHashCode(of = {"id"})
+public class Detail {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -17,16 +17,7 @@ public class Bike {
     private String name;
     private Double cost;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "owner_id")
-    private Owner owner;
-
-    public Bike() {
-    }
-
-    public Bike(String name, Double cost) {
-        this.name = name;
-        this.cost = cost;
+    public Detail() {
     }
 
     public Long getId() {
@@ -51,13 +42,5 @@ public class Bike {
 
     public void setCost(Double cost) {
         this.cost = cost;
-    }
-
-    public Owner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
     }
 }

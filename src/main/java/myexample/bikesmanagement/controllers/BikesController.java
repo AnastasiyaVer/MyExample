@@ -12,36 +12,49 @@ import java.util.List;
 @RequestMapping("bikes")
 public class BikesController {
    private final BikesRepository bikesRepository;
+   private final OwnerController ownerController;
 
    @Autowired
-   public BikesController(BikesRepository bikesRepository) {
+   public BikesController(BikesRepository bikesRepository, OwnerController ownerController) {
         this.bikesRepository = bikesRepository;
+        this.ownerController = ownerController;
     }
 
     @GetMapping
-    public List<Bike> list(){
+    public List<Bike> bikesList(){
         return bikesRepository.findAll();
     }
 
     @GetMapping("{id}")
-    public Bike getOne(@PathVariable("id") Bike bike){
+    public Bike getOneBike(@PathVariable("id") Bike bike){
         return bike;
     }
 
     @PostMapping
-    public Bike create(@RequestBody Bike bike){
-        return bikesRepository.save(bike);
+    public Bike createBike(@RequestBody Bike bike){
+        if(bike.getOwner()!= null){
+            ownerController.createOwner(bike.getOwner());
+        }
+       return bikesRepository.save(bike);
     }
 
     @PutMapping("{id}")
-    public Bike update(@PathVariable("id") Bike bikeFromDb, @RequestBody Bike bike){
+    public Bike updateBike(@PathVariable("id") Bike bikeFromDb, @RequestBody Bike bike){
+        if(bike.getOwner()!= null){
+            ownerController.createOwner(bike.getOwner());
+        }
         BeanUtils.copyProperties(bike,bikeFromDb,"id");
         return bikesRepository.save(bikeFromDb);
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable("id") Bike bike){
+    public void deleteBike(@PathVariable("id") Bike bike){
         bikesRepository.delete(bike);
+    }
+
+    @GetMapping("{name}")
+    public Bike findByNameBike(@PathVariable("name") String name){
+       return bikesRepository.findByName(name);
     }
 
 }
