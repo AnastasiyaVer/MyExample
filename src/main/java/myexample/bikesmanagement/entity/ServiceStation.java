@@ -9,8 +9,8 @@ import javax.persistence.*;
 @Table
 @ToString(of = {"id","name","bike","detail","cost"})
 @EqualsAndHashCode(of = {"id"})
-public class ServiceStation {
-    @Id
+public class ServiceStation {       // основной класс, из которго можно узнать всю информацию
+    @Id                             // по ремонту велосипедов
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;

@@ -25,30 +25,31 @@ public class ServiceStationController {
 
 
     @GetMapping
-    public List<ServiceStation> serviceList(){
-        return serviceStationRepository.findAll();
+    public List<ServiceStation> serviceList(){  // возвращает список ремонтов(наименование и стоимость ремонта,
+                                                // информация по велосипеду, в которую входит инф-ия по владельцу велосипеда,
+        return serviceStationRepository.findAll();  //  информация по ремонтируемой детали)
     }
 
     @GetMapping("{id}")
-    public ServiceStation getOneService(@PathVariable("id") ServiceStation serviceStation){
+    public ServiceStation getOneService(@PathVariable("id") ServiceStation serviceStation){ //возвращает информацию по конкретному ремонту (по id)
         return serviceStation;
     }
 
     @PostMapping
-    public ServiceStation createService(@RequestBody ServiceStation serviceStation){
-        if(serviceStation.getBike()!= null){
-                bikesController.createBike(serviceStation.getBike());
+    public ServiceStation createService(@RequestBody ServiceStation serviceStation){ //создание нового ремонта
+        if(serviceStation.getBike()!= null){ // проверяем, есть ли в запросе информация по велосипеду, если есть, то создаем новую запись
+                bikesController.createBike(serviceStation.getBike()); // по велосипеду, если мы введем существующий id велосипеда, то запись будет отредактирована
         }
-        if(serviceStation.getDetail()!=null){
+        if(serviceStation.getDetail()!=null){ // то же самое, что и выше только насчет записей о детали
             detailsController.createDetail(serviceStation.getDetail());
         }
-        serviceStation.setCost(serviceStation.getCost()/100*serviceStation.getBike().getCost()
-                +serviceStation.getDetail().getCost());
+        serviceStation.setCost(serviceStation.getCost()/100*serviceStation.getBike().getCost()// считаем стоимость ремонта
+                +serviceStation.getDetail().getCost());//берем процент стоимости велосипеда и прибавляем стоимость детали
         return serviceStationRepository.save(serviceStation);
     }
 
     @PutMapping("{id}")
-    public ServiceStation updateService(@PathVariable("id") ServiceStation serviceStationFromDb,
+    public ServiceStation updateService(@PathVariable("id") ServiceStation serviceStationFromDb,// редактирование записи о ремонте
                                  @RequestBody ServiceStation serviceStation){
         if(serviceStation.getBike()!= null){
             bikesController.createBike(serviceStation.getBike());
@@ -63,7 +64,7 @@ public class ServiceStationController {
     }
 
     @DeleteMapping("{id}")
-    public void deleteService(@PathVariable("id") ServiceStation serviceStation){
+    public void deleteService(@PathVariable("id") ServiceStation serviceStation){// удаление записи
         serviceStationRepository.delete(serviceStation);
     }
 }

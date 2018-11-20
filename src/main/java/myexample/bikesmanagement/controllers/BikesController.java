@@ -31,8 +31,8 @@ public class BikesController {
     }
 
     @PostMapping
-    public Bike createBike(@RequestBody Bike bike){
-        if(bike.getOwner()!= null){
+    public Bike createBike(@RequestBody Bike bike){// создаем новую запись о велосипеде
+        if(bike.getOwner()!= null){//проверяем наличие информации о владельце
             ownerController.createOwner(bike.getOwner());
         }
        return bikesRepository.save(bike);

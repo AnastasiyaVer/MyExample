@@ -1,6 +1,5 @@
 package myexample.bikesmanagement.controllers;
 
-import myexample.bikesmanagement.entity.Bike;
 import myexample.bikesmanagement.entity.Detail;
 import myexample.bikesmanagement.repository.DetailsRepository;
 import org.springframework.beans.BeanUtils;
@@ -41,7 +40,7 @@ public class DetailsController{
     }
 
     @DeleteMapping("{id}")
-    public void deleteDetaile(@PathVariable("id") Detail detail){
+    public void deleteDetail(@PathVariable("id") Detail detail){
         detailsRepository.delete(detail);
     }
 
