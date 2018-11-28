@@ -7,21 +7,14 @@ import javax.persistence.*;
 
 @Entity
 @Table
-@ToString(of = {"id","name","bike","detail","cost"})
+@ToString(of = {"id","name"})
 @EqualsAndHashCode(of = {"id"})
-public class ServiceStation {       // основной класс, из которго можно узнать всю информацию
-    @Id                             // по ремонту велосипедов
+public class ServiceStation {
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String name;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "bike_id")
-    private Bike bike;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "detail_id")
-    private Detail detail;
 
-    private Double cost;
+    private String name;
 
     public ServiceStation() {
     }
@@ -42,27 +35,7 @@ public class ServiceStation {       // основной класс, из кот�
         this.name = name;
     }
 
-    public Bike getBike() {
-        return bike;
-    }
 
-    public void setBike(Bike bike) {
-        this.bike = bike;
-    }
 
-    public Detail getDetail() {
-        return detail;
-    }
 
-    public void setDetail(Detail detail) {
-        this.detail = detail;
-    }
-
-    public Double getCost() {
-        return cost;
-    }
-
-    public void setCost(Double cost) {
-        this.cost = cost;
-    }
 }

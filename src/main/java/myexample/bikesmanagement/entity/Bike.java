@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table
 @ToString(of = {"id","name","cost","owner"})
-@EqualsAndHashCode(of = {"id","name"})
+@EqualsAndHashCode(of = {"id"})
 public class Bike {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -60,4 +60,6 @@ public class Bike {
     public void setOwner(Owner owner) {
         this.owner = owner;
     }
+
+
 }

@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Entity
 @Table
-@ToString(of = {"id","name","cost"})
+@ToString(of = {"id","name","cost","serviceStation"})
 @EqualsAndHashCode(of = {"id"})
 public class Detail {
     @Id
@@ -16,6 +16,10 @@ public class Detail {
 
     private String name;
     private Double cost;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "service_id")
+    private ServiceStation serviceStation;
 
     public Detail() {
     }
@@ -42,5 +46,13 @@ public class Detail {
 
     public void setCost(Double cost) {
         this.cost = cost;
+    }
+
+    public ServiceStation getServiceStation() {
+        return serviceStation;
+    }
+
+    public void setServiceStation(ServiceStation serviceStation) {
+        this.serviceStation = serviceStation;
     }
 }

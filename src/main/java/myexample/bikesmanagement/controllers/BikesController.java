@@ -23,9 +23,9 @@ public class BikesController {
     @GetMapping
     public List<Bike> bikesList(){
         return bikesRepository.findAll();
-    }
+    }//возвращает список всех велоипедов
 
-    @GetMapping("{id}")
+    @GetMapping("{id}")//возвращает информацию по заданному велосипеду
     public Bike getOneBike(@PathVariable("id") Bike bike){
         return bike;
     }
@@ -38,7 +38,7 @@ public class BikesController {
        return bikesRepository.save(bike);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("{id}")//редактирование информации по заданному велосипеду
     public Bike updateBike(@PathVariable("id") Bike bikeFromDb, @RequestBody Bike bike){
         if(bike.getOwner()!= null){
             ownerController.createOwner(bike.getOwner());
@@ -52,7 +52,7 @@ public class BikesController {
         bikesRepository.delete(bike);
     }
 
-    @GetMapping("{name}")
+    @GetMapping("{name}")//возвращает информацию по аданному велосипеду(по имени)
     public Bike findByNameBike(@PathVariable("name") String name){
        return bikesRepository.findByName(name);
     }
