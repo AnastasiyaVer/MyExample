@@ -9,23 +9,23 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table
-@ToString(of = {"id","name","bike","purchase","cost","serviceStation"})
+@ToString(of = {"id","detail","number","cost","sum","localDateTime","rest"})
 @EqualsAndHashCode(of = {"id"})
-public class Repair {       // класс, из которго можно узнать всю информацию
-    @Id                             // по ремонту велосипедов
+public class Purchase {
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String name;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "bike_id")
-    private Bike bike;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "purchase_id")
-    private Purchase purchase;
 
-    private Double cost= 0.0;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "detail_id")
+    private Detail detail;
 
-    @Column(name = "date_repair")
+    private Integer number = 0;
+    private Double cost;
+    private Double sum;
+    private Integer rest = 0;
+
+    @Column(name = "date_purchase")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime localDateTime;
 
@@ -33,8 +33,7 @@ public class Repair {       // класс, из которго можно узн
     @JoinColumn(name = "service_id")
     private ServiceStation serviceStation;
 
-
-    public Repair() {
+    public Purchase() {
     }
 
     public Long getId() {
@@ -45,36 +44,36 @@ public class Repair {       // класс, из которго можно узн
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Detail getDetail() {
+        return detail;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDetail(Detail detail) {
+        this.detail = detail;
     }
 
-    public Bike getBike() {
-        return bike;
+    public Integer getNumber() {
+        return number;
     }
 
-    public void setBike(Bike bike) {
-        this.bike = bike;
-    }
-
-    public Purchase getPurchase() {
-        return purchase;
-    }
-
-    public void setPurchase(Purchase purchase) {
-        this.purchase = purchase;
+    public void setNumber(Integer number) {
+        this.number = number;
     }
 
     public Double getCost() {
         return cost;
     }
 
-    public void setCost(Double cost){
+    public void setCost(Double cost) {
         this.cost = cost;
+    }
+
+    public Double getSum() {
+        return sum;
+    }
+
+    public void setSum() {
+        this.sum = this.cost*this.number;
     }
 
     public LocalDateTime getLocalDateTime() {
@@ -92,4 +91,13 @@ public class Repair {       // класс, из которго можно узн
     public void setServiceStation(ServiceStation serviceStation) {
         this.serviceStation = serviceStation;
     }
+
+    public Integer getRest() {
+        return rest;
+    }
+
+    public void setRest(Integer rest) {
+        this.rest = rest;
+    }
+
 }

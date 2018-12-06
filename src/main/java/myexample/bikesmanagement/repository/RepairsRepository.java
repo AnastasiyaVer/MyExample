@@ -15,6 +15,6 @@ public interface RepairsRepository extends JpaRepository<Repair,Long> {
 
     List<Repair> findAllByServiceStation(ServiceStation serviceStation);//возвращает список всех ремонтов заданного сервиса
 
-     List<Repair> findAllByLocalDateTimeBetween(LocalDateTime start,LocalDateTime end);//возвращает список всех ремонтов за последние 30 дней
+     List<Repair> findAllByLocalDateTimeBetween(LocalDateTime start,LocalDateTime end);//возвращает список всех ремонтов за заданный промежуток времени
 
 }

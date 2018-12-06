@@ -1,10 +1,8 @@
 package myexample.bikesmanagement.controllers;
 
-import myexample.bikesmanagement.entity.Detail;
-import myexample.bikesmanagement.entity.Owner;
-import myexample.bikesmanagement.entity.Repair;
-import myexample.bikesmanagement.entity.ServiceStation;
+import myexample.bikesmanagement.entity.*;
 import myexample.bikesmanagement.repository.DetailsRepository;
+import myexample.bikesmanagement.repository.PurchaseRepository;
 import myexample.bikesmanagement.repository.RepairsRepository;
 import myexample.bikesmanagement.repository.ServiceStationRepository;
 import org.springframework.beans.BeanUtils;
@@ -21,13 +19,15 @@ public class ServiceStationController {
     private final ServiceStationRepository serviceStationRepository;
     private final DetailsRepository detailsRepository;
     private final RepairsRepository repairsRepository;
+    private final PurchaseRepository purchaseRepository;
 
     @Autowired
     public ServiceStationController(ServiceStationRepository serviceStationRepository,DetailsRepository detailsRepository,
-                                    RepairsRepository repairsRepository) {
+                                    RepairsRepository repairsRepository,PurchaseRepository purchaseRepository) {
         this.serviceStationRepository = serviceStationRepository;
         this.detailsRepository = detailsRepository;
         this.repairsRepository = repairsRepository;
+        this.purchaseRepository = purchaseRepository;
     }
 
     @GetMapping
@@ -57,15 +57,9 @@ public class ServiceStationController {
         serviceStationRepository.delete(serviceStation);
     }
 
-    @GetMapping("{id}/details")//вовращает информацию о закупленных всех деталях заданного сервиса
-    public List<Detail> listDetail(@PathVariable("id")ServiceStation serviceStation){
-        return detailsRepository.findAllByServiceStation(serviceStation);
-    }
-
-    @GetMapping("{id}/income")//считает всю чистую прибыль заданного сервиса
-    public Double income(@PathVariable("id") ServiceStation serviceStation){
-        Double inc;
-        return inc = repairsRepository.sumCostRepair(serviceStation)-detailsRepository.sumCostDetails(serviceStation);
+    @GetMapping("{id}/purchase")//вовращает информацию о всех закупках заданного сервиса
+    public List<Purchase> listPurchase(@PathVariable("id")ServiceStation serviceStation){
+        return purchaseRepository.findAllByServiceStation(serviceStation);
     }
 
     @GetMapping("{id}/allclients")//возвращает информацию о всех клиентах заданного сервиса
@@ -79,17 +73,17 @@ public class ServiceStationController {
         return owners;
     }
 
-    @GetMapping("{id}/detailsMonth")//вовращает информацию о закупленных деталях заданного сервиса за последние 30 дней
-    public List<Detail> listDetailForMonth(@PathVariable("id")ServiceStation serviceStation){
-        List<Repair> repairs = repairsRepository.findAllByLocalDateTimeBetween(LocalDateTime.now()
+    @GetMapping("{id}/purchaseMonth")//вовращает информацию о закупках заданного сервиса за последние 30 дней
+    public List<Purchase> listPurchaseForMonth(@PathVariable("id")ServiceStation serviceStation){
+        List<Purchase> purchases = purchaseRepository.findAllByLocalDateTimeBetween(LocalDateTime.now()
                 .minusDays(30),LocalDateTime.now());
-        List<Detail> details = new ArrayList<>();
-        for (Repair repair:repairs) {
-            if(detailsRepository.findAllByServiceStation(serviceStation).contains(repair.getDetail())) {
-                details.add(repair.getDetail());
+        List<Purchase> purchaseForMonth = new ArrayList<>();
+        for (Purchase purchase:purchases) {
+            if(purchaseRepository.findAllByServiceStation(serviceStation).contains(purchase)){
+                purchaseForMonth.add(purchase);
             }
         }
-        return details;
+        return purchaseForMonth;
     }
 
     @GetMapping("{id}/clientsMonth")//возвращает информацию о всех клиентах заданного сервиса за последние 30дней
@@ -106,16 +100,23 @@ public class ServiceStationController {
 
     @GetMapping("{id}/incomeMonth")//считает всю чистую прибыль заданного сервиса за последние 30 дней
     public Double incomeForMonth(@PathVariable("id") ServiceStation serviceStation){
-        Double inc = 0.0;
+        Double incRepair = 0.0;
         List<Repair> repairs = repairsRepository.findAllByLocalDateTimeBetween(LocalDateTime.now()
                 .minusDays(30),LocalDateTime.now());
         for (Repair repair:repairs) {
-            if(repairsRepository.findAllByServiceStation(serviceStation).contains(repair)&&
-                    detailsRepository.findAllByServiceStation(serviceStation).contains(repair.getDetail())) {
-                inc = repair.getCost()-repair.getDetail().getCost();
+            if(repairsRepository.findAllByServiceStation(serviceStation).contains(repair)) {
+                incRepair = incRepair + repair.getCost();
             }
         }
-        return inc;
+        Double incPurchase = 0.0;
+        List<Purchase> purchases = purchaseRepository.findAllByLocalDateTimeBetween(LocalDateTime.now()
+                .minusDays(30),LocalDateTime.now());
+        for (Purchase purchase:purchases) {
+            if(purchaseRepository.findAllByServiceStation(serviceStation).contains(purchase)){
+                incPurchase = incPurchase + purchase.getSum();
+            }
+        }
+        return incRepair - incPurchase;
     }
 
 }

@@ -1,13 +1,15 @@
 package myexample.bikesmanagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table
-@ToString(of = {"id","name","cost","serviceStation"})
+@ToString(of = {"id","name","cost"})
 @EqualsAndHashCode(of = {"id"})
 public class Detail {
     @Id
@@ -16,10 +18,6 @@ public class Detail {
 
     private String name;
     private Double cost;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "service_id")
-    private ServiceStation serviceStation;
 
     public Detail() {
     }
@@ -48,11 +46,4 @@ public class Detail {
         this.cost = cost;
     }
 
-    public ServiceStation getServiceStation() {
-        return serviceStation;
-    }
-
-    public void setServiceStation(ServiceStation serviceStation) {
-        this.serviceStation = serviceStation;
-    }
 }

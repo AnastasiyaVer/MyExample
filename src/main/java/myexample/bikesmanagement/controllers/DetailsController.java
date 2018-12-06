@@ -1,23 +1,25 @@
 package myexample.bikesmanagement.controllers;
 
 import myexample.bikesmanagement.entity.Detail;
+import myexample.bikesmanagement.entity.Purchase;
+import myexample.bikesmanagement.entity.Repair;
 import myexample.bikesmanagement.repository.DetailsRepository;
+import myexample.bikesmanagement.repository.PurchaseRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("details")
 public class DetailsController{
     private final DetailsRepository detailsRepository;
-    private final ServiceStationController serviceStationController;
 
     @Autowired
-    public DetailsController(DetailsRepository detailsRepository,ServiceStationController serviceStationController) {
+    public DetailsController(DetailsRepository detailsRepository) {
         this.detailsRepository = detailsRepository;
-        this.serviceStationController = serviceStationController;
     }
 
     @GetMapping
@@ -32,17 +34,11 @@ public class DetailsController{
 
     @PostMapping
     public Detail createDetail(@RequestBody Detail detail){
-        if(detail.getServiceStation()!=null){
-            serviceStationController.createServiceStation(detail.getServiceStation());
-        }
         return detailsRepository.save(detail);
     }
 
     @PutMapping("{id}")
     public Detail updateDetail(@PathVariable("id") Detail detailFromDb, @RequestBody Detail detail){
-        if(detail.getServiceStation()!=null){
-            serviceStationController.createServiceStation(detail.getServiceStation());
-        }
         BeanUtils.copyProperties(detail,detailFromDb,"id");
         return detailsRepository.save(detailFromDb);
     }

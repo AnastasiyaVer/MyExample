@@ -1,6 +1,9 @@
 package myexample.bikesmanagement.controllers;
 
+import myexample.bikesmanagement.entity.Detail;
+import myexample.bikesmanagement.entity.Purchase;
 import myexample.bikesmanagement.entity.Repair;
+import myexample.bikesmanagement.repository.PurchaseRepository;
 import myexample.bikesmanagement.repository.RepairsRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +17,16 @@ import java.util.List;
 public class RepairsController {
     private final RepairsRepository repairsRepository;
     private final BikesController bikesController;
-    private final DetailsController detailsController;
     private final ServiceStationController serviceStationController;
+    private final PurchaseController purchaseController;
 
     @Autowired
     public RepairsController(RepairsRepository repairsRepository, BikesController bikesController,
-                             DetailsController detailsController,ServiceStationController serviceStationController) {
+                             ServiceStationController serviceStationController,PurchaseController purchaseController) {
         this.repairsRepository = repairsRepository;
         this.bikesController = bikesController;
-        this.detailsController = detailsController;
         this.serviceStationController = serviceStationController;
+        this.purchaseController = purchaseController;
     }
 
 
@@ -39,37 +42,44 @@ public class RepairsController {
     }
 
     @PostMapping
-    public Repair createService(@RequestBody Repair repair){ //создание нового ремонта
+    public Repair createService(@RequestBody Repair repair) { //создание нового ремонта
         repair.setLocalDateTime(LocalDateTime.now());
-        if(repair.getBike()!= null){ // проверяем, есть ли в запросе информация по велосипеду, если есть, то создаем новую запись
-                bikesController.createBike(repair.getBike()); // по велосипеду, если мы введем существующий id велосипеда, то запись будет отредактирована
+        repair.getPurchase().setServiceStation(repair.getServiceStation());
+        if (repair.getBike() != null) { // проверяем, есть ли в запросе информация по велосипеду, если есть, то создаем новую запись
+            bikesController.createBike(repair.getBike()); // по велосипеду, если мы введем существующий id велосипеда, то запись будет отредактирована
         }
-        if(repair.getDetail()!=null){ // то же самое, что и выше только насчет записей о детали
-            detailsController.createDetail(repair.getDetail());
-        }
-        if(repair.getServiceStation()!=null){
+        if (repair.getServiceStation() != null) {
             serviceStationController.createServiceStation(repair.getServiceStation());
+
         }
-        repair.setCost(0.2* repair.getBike().getCost()
-                + repair.getDetail().getCost());//считаем стоимость ремонта
-        return repairsRepository.save(repair);//берем 20 процентов стоимости велосипеда и прибавляем стоимость детали
-    }
+        if (repair.getPurchase()!= null) {
+            purchaseController.createPurchase(repair.getPurchase());
+        }
+        repair.setCost(0.2 * repair.getBike().getCost()//считаем стоимость ремонта
+                + repair.getPurchase().getCost());//берем 20 процентов стоимости велосипеда и прибавляем стоимость детали
+       // purchaseController.lessRest(repair.getPurchase());
+       // purchaseController.checkRest(repair.getPurchase());
+        return repairsRepository.save(repair);
+        }
 
     @PutMapping("{id}")
     public Repair updateService(@PathVariable("id") Repair repairFromDb,// редактирование записи о ремонте
                                 @RequestBody Repair repair){
         repair.setLocalDateTime(LocalDateTime.now());
-        if(repair.getBike()!= null){
-            bikesController.createBike(repair.getBike());
+        if (repair.getBike() != null) { // проверяем, есть ли в запросе информация по велосипеду, если есть, то создаем новую запись
+            bikesController.createBike(repair.getBike()); // по велосипеду, если мы введем существующий id велосипеда, то запись будет отредактирована
         }
-        if(repair.getDetail()!=null){
-            detailsController.createDetail(repair.getDetail());
-        }
-        if(repair.getServiceStation()!=null){
+        if (repair.getServiceStation() != null) {
             serviceStationController.createServiceStation(repair.getServiceStation());
         }
-        repair.setCost(0.2* repair.getBike().getCost()
-                + repair.getDetail().getCost());
+        if (repair.getPurchase()!= null) {
+            purchaseController.createPurchase(repair.getPurchase());
+
+        }
+        repair.setCost(0.2 * repair.getBike().getCost()//считаем стоимость ремонта
+                + repair.getPurchase().getCost());//берем 20 процентов стоимости велосипеда и прибавляем стоимость детали
+        purchaseController.lessRest(repair.getPurchase());
+        purchaseController.checkRest(repair.getPurchase());
         BeanUtils.copyProperties(repair, repairFromDb,"id");
         return repairsRepository.save(repairFromDb);
     }
