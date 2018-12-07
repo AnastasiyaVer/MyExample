@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,6 +24,8 @@ public class Purchase {
     private Integer number = 0;
     private Double cost;
     private Double sum;
+
+    @Min(0)
     private Integer rest = 0;
 
     @Column(name = "date_purchase")

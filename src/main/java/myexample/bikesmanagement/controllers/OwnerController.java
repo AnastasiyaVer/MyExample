@@ -19,7 +19,7 @@ public class OwnerController {
     }
 
     @GetMapping
-    public List<Owner> bikesList(){
+    public List<Owner> ownerList(){
         return ownerRepository.findAll();
     }
 

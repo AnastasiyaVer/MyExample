@@ -1,6 +1,5 @@
 package myexample.bikesmanagement.repository;
 
-import myexample.bikesmanagement.entity.Detail;
 import myexample.bikesmanagement.entity.Purchase;
 import myexample.bikesmanagement.entity.ServiceStation;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,6 +18,7 @@ public interface PurchaseRepository extends JpaRepository<Purchase,Long> {
 
     List<Purchase> findAllByLocalDateTimeBetween(LocalDateTime start, LocalDateTime end);//возвращает список всех закупок за заданный период времени
 
-    Purchase findById(Purchase purchase);
+    @Query("select u.rest from Purchase u where u.id = :id")//возвращает информацию об остатке по заданному id
+    Integer findRest(@Param("id") Long id);
 
 }

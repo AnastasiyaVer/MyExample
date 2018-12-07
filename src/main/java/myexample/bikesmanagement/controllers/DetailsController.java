@@ -1,15 +1,11 @@
 package myexample.bikesmanagement.controllers;
 
 import myexample.bikesmanagement.entity.Detail;
-import myexample.bikesmanagement.entity.Purchase;
-import myexample.bikesmanagement.entity.Repair;
 import myexample.bikesmanagement.repository.DetailsRepository;
-import myexample.bikesmanagement.repository.PurchaseRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController

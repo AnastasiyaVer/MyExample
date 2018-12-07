@@ -17,15 +17,13 @@ import java.util.List;
 @RequestMapping("service")
 public class ServiceStationController {
     private final ServiceStationRepository serviceStationRepository;
-    private final DetailsRepository detailsRepository;
     private final RepairsRepository repairsRepository;
     private final PurchaseRepository purchaseRepository;
 
     @Autowired
-    public ServiceStationController(ServiceStationRepository serviceStationRepository,DetailsRepository detailsRepository,
+    public ServiceStationController(ServiceStationRepository serviceStationRepository,
                                     RepairsRepository repairsRepository,PurchaseRepository purchaseRepository) {
         this.serviceStationRepository = serviceStationRepository;
-        this.detailsRepository = detailsRepository;
         this.repairsRepository = repairsRepository;
         this.purchaseRepository = purchaseRepository;
     }
