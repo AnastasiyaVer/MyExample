@@ -62,6 +62,7 @@ public class PurchaseController {
             purchase.setRest(purchase.getNumber());
 
         }else {
+            if(purchaseRepository.findRest(purchase.getId())==null) throw new NotFoundException();
             purchase.setRest(purchaseRepository.findRest(purchase.getId()));
         }
         if(purchase.getRest()==0) throw new RestIsZeroException("Rest = 0. Please select other id");
