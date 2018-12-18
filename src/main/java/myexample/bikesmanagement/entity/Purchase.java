@@ -36,6 +36,8 @@ public class Purchase {
     @JoinColumn(name = "service_id")
     private ServiceStation serviceStation;
 
+    private boolean checkNewPurchase = false;
+
     public Purchase() {
     }
 
@@ -101,6 +103,14 @@ public class Purchase {
 
     public void setRest(Integer rest) {
         this.rest = rest;
+    }
+
+    public boolean isCheckNewPurchase() {
+        return checkNewPurchase;
+    }
+
+    public void setCheckNewPurchase(boolean checkNewPurchase) {
+        this.checkNewPurchase = checkNewPurchase;
     }
 
 }

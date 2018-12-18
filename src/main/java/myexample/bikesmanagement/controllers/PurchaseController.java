@@ -6,11 +6,16 @@ import myexample.bikesmanagement.exceptions.RestIsZeroException;
 import myexample.bikesmanagement.repository.PurchaseRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@EnableScheduling
+@Component
 @RestController
 @RequestMapping("purchase")
 public class PurchaseController {
@@ -88,7 +93,7 @@ public class PurchaseController {
     }
 
     public void checkRest(@RequestBody Purchase purchase){//проверяет остаток деталей, и если осталось меньше 1, то создает новую закупку 5 деталей
-        if(purchase.getRest()<1){
+        if(purchase.getRest()<1 && purchase.isCheckNewPurchase() == false){
             Purchase purchaseNew = new Purchase();
             BeanUtils.copyProperties(purchase,purchaseNew,"id");
             purchaseNew.setNumber(5);
@@ -96,7 +101,18 @@ public class PurchaseController {
             purchaseRepository.save(purchaseNew);
             purchaseNew.setRest(purchaseNew.getNumber());
             purchaseRepository.save(purchaseNew);
+            purchase.setCheckNewPurchase(true);
+            purchaseRepository.save(purchase);
         }
     }
+
+
+    @Scheduled(fixedDelay = Long.MAX_VALUE)//при запуске приложения проверяет остаток деталей по всему списку закупок и
+    public void runOnceOnStartup() { //создает новую закупку при необходимости
+        List<Purchase> purchases = purchaseList();
+        for (Purchase purchase:purchases) {
+            checkRest(purchase);
+            }
+        }
 
 }

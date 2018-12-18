@@ -77,7 +77,6 @@ public class RepairsController {
         }
         repair.setCost(0.2 * repair.getBike().getCost()//считаем стоимость ремонта
                 + repair.getPurchase().getCost());//берем 20 процентов стоимости велосипеда и прибавляем стоимость детали
-        purchaseController.lessRest(repair.getPurchase());
         purchaseController.checkRest(repair.getPurchase());
         BeanUtils.copyProperties(repair, repairFromDb,"id");
         return repairsRepository.save(repairFromDb);
